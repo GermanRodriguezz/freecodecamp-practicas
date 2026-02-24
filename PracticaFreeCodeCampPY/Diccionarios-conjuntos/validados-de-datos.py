@@ -1,3 +1,4 @@
+import re
 medical_records = [
     {
         'patient_id': 'P1001',
@@ -34,7 +35,13 @@ medical_records = [
 ]
 
 def find_invalid_records(patient_id, age, gender, diagnosis, medications,last_visit_id):
-    constraints = { 'patient_id' : isinstance(patient_id,str)} # contendra cada clave que deberia esperar tener en los datos a validar
+    constraints = {
+        'patient_id': isinstance(patient_id,str) and re.fullmatch('p\d+',patient_id, re.IGNORECASE), # Nonereemplazado por el objeto de coincidencia <re.Match object; span=(0, 1), match='P'>, donde matchindica la coincidencia e spanindica su ubicación en la cadena.
+        'age' : isinstance(age,int) and age >= 18,
+        'gender' : isinstance(gender,str) and (gender.lower() in ("male" ,"female")),
+        'diagnosis' : isinstance(diagnosis,str) or diagnosis is None
+                                                            #agregue un +cuantificador a su patrón de expresión regular para que coincida con uno o más dígitos
+        }# contendra cada clave que deberia esperar tener en los datos a validar
     return constraints
 
 def validate(data):
@@ -58,3 +65,8 @@ def validate(data):
 
 validate(medical_records)
 print(find_invalid_records(**medical_records[0])) # imprimo lo que devuelva la funcion find y como parametro se estan pasando los elementos de un diccionario descomprimidos, se pasan las palabras claves
+
+"""
+Una expresión regular, o regex, es un patrón que se utiliza para encontrar una secuencia de caracteres en un texto. La searchfunción del remódulo toma un patrón regex y una cadena como argumentos
+Devuelve un objeto coincidente si el patrón produce una coincidencia. De lo contrario, devuelve None.
+"""
