@@ -39,10 +39,13 @@ def find_invalid_records(patient_id, age, gender, diagnosis, medications,last_vi
         'patient_id': isinstance(patient_id,str) and re.fullmatch('p\d+',patient_id, re.IGNORECASE), # Nonereemplazado por el objeto de coincidencia <re.Match object; span=(0, 1), match='P'>, donde matchindica la coincidencia e spanindica su ubicación en la cadena.
         'age' : isinstance(age,int) and age >= 18,
         'gender' : isinstance(gender,str) and (gender.lower() in ("male" ,"female")),
-        'diagnosis' : isinstance(diagnosis,str) or diagnosis is None
+        'diagnosis' : isinstance(diagnosis,str) or diagnosis is None,
+        'medications' : isinstance(medications,list) and all([isinstance(i,str) for i in medications]),
+        'last_visit_id': isinstance(last_visit_id,str) and re.fullmatch('v\d+',last_visit_id,re.IGNORECASE)
                                                             #agregue un +cuantificador a su patrón de expresión regular para que coincida con uno o más dígitos
         }# contendra cada clave que deberia esperar tener en los datos a validar
-    return constraints
+    # en la clave medications pregunta si el valor es una lista y con la funcion all devuelve un booleano para garantizar que cada elemento que contiene la lista es una cadena
+    return [key for key,value in constraints.items()]
 
 def validate(data):
     is_sequence = isinstance(data, (list,tuple)) # is_sequence toma el valor de un booleano si es parametro "data" pertenece al tipo de dato lista o tupla
