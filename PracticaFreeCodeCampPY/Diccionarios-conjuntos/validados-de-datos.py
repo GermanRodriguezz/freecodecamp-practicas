@@ -45,7 +45,7 @@ def find_invalid_records(patient_id, age, gender, diagnosis, medications,last_vi
                                                             #agregue un +cuantificador a su patrón de expresión regular para que coincida con uno o más dígitos
         }# contendra cada clave que deberia esperar tener en los datos a validar
     # en la clave medications pregunta si el valor es una lista y con la funcion all devuelve un booleano para garantizar que cada elemento que contiene la lista es una cadena
-    return [key for key,value in constraints.items()]
+    return [key for key,value in constraints.items() if value == False] # el retorno de esta funcion sera una lista que contenga solo claves no validas
 
 def validate(data):
     is_sequence = isinstance(data, (list,tuple)) # is_sequence toma el valor de un booleano si es parametro "data" pertenece al tipo de dato lista o tupla
@@ -58,9 +58,14 @@ def validate(data):
         if not isinstance(dictionary,dict): # si desde data el valor de dictionary no pertenece a un diccionario
             print(f'Invalid format: expected a dictionary at position {index}.')
             is_invalid = True
+            continue
         if set(dictionary.keys()) != key_set: # siguiendo el comentario de arriba, verificamos si el diccionario actual (pasado a SET) es distinto al formato definido antes
             print(f'Invalid format: {dictionary} at position {index} has missing and/or invalid keys.')
             is_invalid = True
+            continue # esta sentencia debe ir debido que si paso datos no validos como elementos que no pertenecen al diccionaro o invalidos
+        invalid_records = find_invalid_records(**dictionary)
+        
+            
     if is_invalid :
         return False
     print('Valid format')
