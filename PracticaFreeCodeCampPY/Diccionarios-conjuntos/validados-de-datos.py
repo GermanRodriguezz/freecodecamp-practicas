@@ -62,6 +62,11 @@ def validate(data):
         if set(dictionary.keys()) != key_set: # siguiendo el comentario de arriba, verificamos si el diccionario actual (pasado a SET) es distinto al formato definido antes
             print(f'Invalid format: {dictionary} at position {index} has missing and/or invalid keys.')
             is_invalid = True
+            continue
+        invalid_records = find_invalid_records(**dictionary)
+        for invalid in invalid_records:
+            print(f"Unexpected format '{invalid}: {dictionary[invalid]}' at position {index}.")
+            is_invalid = True
             continue # esta sentencia debe ir debido que si paso datos no validos como elementos que no pertenecen al diccionaro o invalidos
         invalid_records = find_invalid_records(**dictionary)
         
